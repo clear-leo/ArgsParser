@@ -115,8 +115,3 @@ pub fn is_arg(argument: &str) -> bool {
     false
 }
 
-// TODO:
-// - Rework get_next_arg to not care about order (Tries every order if single dash option, does the same thing if double dash) hashmap maybe?
-// COULD be fixed with only reworking the get_place
-// - Create new function "is_option()" that returns a bool if a certain single dash option is detected (order specific if single dash)
-// - Learn to parse json files in rust (jsonl or json) || unrelated
