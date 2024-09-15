@@ -21,9 +21,9 @@ pub fn get_place(argument: &str) -> usize {
 
     for index in 0..args.len() {
         if argument.starts_with("-") && !argument.starts_with("--") {
+            let mut argument_arr: Vec<_> = argument.chars().collect();
             let mut index_arr: Vec<_> = args[index].chars().collect();
             index_arr.sort();
-            let mut argument_arr: Vec<_> = argument.chars().collect();
             argument_arr.sort();
             if argument_arr == index_arr {
                 result = index;
