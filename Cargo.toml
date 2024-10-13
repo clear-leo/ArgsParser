@@ -2,6 +2,8 @@
 name = "argsparser"
 version = "0.1.0"
 edition = "2021"
+licence = "MIT"
+description = "Argument parsing library"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
 
-[dependencies]
-shittyinput = "0.1.4"
