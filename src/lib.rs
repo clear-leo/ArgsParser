@@ -1,23 +1,16 @@
 //! A library made for easier command line argument management
 //!
 //! Initially it was supposed to be a boilerplate module for my own command line utilities but it looked pretty easy to make a library
-//!
-//! Usage:
-//! - ```get_place(argument)``` returns where in the args the specified argument / option is is, returns 0 if it doesn't exist.
-//! - ```get_options()``` returns a vector with the option arguments ("-(option)")
-//! - ```get_next_arg(argument)``` returns the next argument of the specified option / argument
-//! - ```get_lones()``` returns a vector containing the lone / independent arguments (arguments that are not next to options and not options)
-//! - ```get_full_args()``` returns the arguments entirely
-//! - ```is_arg(argument)``` returns a bool depending on if the specified argument / option exists.
-//!
-//! Might wanna write this yourself for your usecase inside a module, this is just a general library that I've made for my OWN usecases.
+//! You might want to write this yourself for your usecase inside a module, this is just a general library that I've made for my OWN usecases.
+//! 
+//! At the moment I haven't tested this library fully, please beware of possible errors even though there shouldn't be any.
 
 use std::env;
 // Get functions (getters)
-/// Uses the input text and tells you where it is in the args vector. Returns 0 if it can't find it.
-pub fn get_place(argument: &str) -> usize {
+/// Uses the input text and tells you where it is in the args vector, returns an ```Option<usize>```
+pub fn get_place(argument: &str) -> Option<usize> {
     let args: Vec<_> = env::args().collect();
-    let mut result: usize = 0;
+    let mut result: Option<usize> = None;
 
     for index in 0..args.len() {
         if argument.starts_with("-") && !argument.starts_with("--") {
@@ -26,13 +19,13 @@ pub fn get_place(argument: &str) -> usize {
             index_arr.sort();
             argument_arr.sort();
             if argument_arr == index_arr {
-                result = index;
+                result = Some(index);
                 break;
             }
         }
         
         if args[index] == argument {
-            result = index;
+            result = Some(index);
             break;
         }
 
@@ -55,27 +48,25 @@ pub fn get_options() -> Vec<String> {
     result
 }
 
-/// Returns the specified argument / option's next argument. Returns an empty string if it can't find it.
-pub fn get_next_arg(argument: &str) -> String {
+/// Returns the specified argument / option's next argument in an ```Option<String>```
+pub fn get_next_arg(argument: &str) -> Option<String>{
     let args: Vec<_> = env::args().collect();
-    let mut result = String::new();
+    let mut result = None;
     if args.len() == 1 {
         return result;
     }
     let place = get_place(argument);
 
-    if place == 0 {
-        return result;
+    if let Some(place) = place { 
+        if args.len() == place + 1 {
+            return result;
+        }
+        result = Some(args[place + 1].clone());
     }
-
-    if args.len() == place + 1 {
-        return result;
-    }
-    result = args[place + 1].clone();
     result
 }
 
-/// Returns the lone / independent arguments in order, in a vector. Returns an empty vector if there is none
+/// Returns the lone / independent arguments in order. Returns an empty vec if there is none
 pub fn get_lones() -> Vec<String> {
     let args: Vec<_> = env::args().collect();
     let mut result = vec![];
@@ -109,7 +100,8 @@ pub fn get_full_args() -> Vec<String> {
 //Boolean return functions (is-ers)
 /// Checks if an argument exists
 pub fn is_arg(argument: &str) -> bool {
-    if get_place(argument) > 0 {
+    let place = get_place(argument);
+    if let Some(_place) = place {
         return true;
     }
     false
